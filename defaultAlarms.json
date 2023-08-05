@@ -1,0 +1,20 @@
+[
+	{
+		"id": 1,
+		"name": "Extracció Sang",
+		"description": "S'ha de treure sang",
+		"days": 30
+	},
+	{
+		"id": 2,
+		"name": "Vacunació PVRS",
+		"description": "Trucar al veterenari per a que es vacuni aquesta explotació",
+		"days": 60
+	},
+	{
+		"id": 3,
+		"name": "Comprovació nivells aigua",
+		"description": "S'ha de comprovar que l'explotació animal estigui consumint el nivell d'aigua recomanat",
+		"days": 90
+	}
+]

@@ -31,6 +31,12 @@
         "projectId": "bf8bb780-e630-4fcc-8c70-38f8a11420ce"
       }
     },
-    "owner": "arnaucastells"
+    "owner": "arnaucastells",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/bf8bb780-e630-4fcc-8c70-38f8a11420ce"
+    }
   }
 }

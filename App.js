@@ -3,7 +3,13 @@ import { View, TextInput, Platform, Text, ScrollView } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import Button from "./src/Button";
 import Constants from 'expo-constants';
-import { DateTimePicker, DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { customStyle as styles } from "./styles";
+
+import data from './defaultAlarms.json';
+
+const defaultAlarmsJSON = require('./defaultAlarms.json')
+const entriesJSON = require('./savedEntries.json')
 
 const projectId = Constants.expoConfig.extra.eas.projectId;
 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -17,12 +23,13 @@ Notifications.setNotificationHandler({
 
 export default function App() {
   const [date, setDate] = useState(new Date());
-  const [message, setMessage] = useState('');
   const [granjaName, setGranjaName] = useState("")
 
-  const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
+
+  const [defaultAlarms, setDefaultAlarms] = useState([])
+  const [entries, setEntries] = useState([])
 
   useEffect(() => {
     registerForPushNotificationsAsync()
@@ -35,11 +42,33 @@ export default function App() {
       console.log("RESPONSE", response);
     });
 
+    loadDefaultAlarms()
+    loadSavedEntries()
+
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current);
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
+
+
+  async function loadDefaultAlarms() {
+    try {
+      const parsedData = JSON.parse(JSON.stringify(defaultAlarmsJSON));
+      setDefaultAlarms(parsedData);
+    } catch (error) {
+      console.error('Error reading or parsing JSON:', error);
+    }
+  }
+
+  async function loadSavedEntries() {
+    try {
+      const parsedData = JSON.parse(JSON.stringify(entriesJSON));
+      setEntries(parsedData);
+    } catch (error) {
+      console.error('Error reading or parsing JSON:', error);
+    }
+  }
 
   async function registerForPushNotificationsAsync() {
     let token;
@@ -109,18 +138,22 @@ export default function App() {
 
   const AlarmBox = (props) => {
     return (<>
-      <View style={{ flexDirection: "row", padding: 8, marginVertical: 8, backgroundColor: "grey", borderRadius: 10, alignItems: "center", justifyContent: "center" }}>
-        <Text style={{ flex: 6, color: "white", marginLeft: 10 }}>{props.title}</Text>
-        <Text style={{ flex: 4, color: "white", marginRight: 10 }}>a los {props.duration} dias</Text>
+      <View style={{ padding: 5, marginVertical: 5, paddingHorizontal:10, backgroundColor: "grey", borderRadius: 10, alignItems: "flex-start", justifyContent: "flex-start" }}>
+        <View style={{ flexDirection: "row" }}>
+          <Text style={{ flex: 6, color: "white",  }}>{props.item.name}</Text>
+          <Text style={{ flex: 4, color: "white",  }}>a los {props.item.days} dias</Text>
+        </View>
       </View>
     </>)
   }
 
   return (
     <>
-      <ScrollView style={{ paddingVertical: 45, paddingHorizontal: 20 }}>
+      <Text style={{ textAlign: "center", fontWeight: "bold", paddingBottom: 10, marginTop: 55, fontSize: 24, borderBottomWidth: 1 }}>GLOBAL ALARMS</Text>
+      <ScrollView style={{ paddingVertical: 10, paddingHorizontal: 20, backgroundColor: "#ffffef" }}>
 
         <Text style={{ textAlign: "center", fontWeight: "bold" }}>Fecha de entrada</Text>
+        <Text style={{ textAlign: "center", fontWeight: "bold" }}>{date.toLocaleDateString("es-ES", options)}</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-evenly", marginTop: 10 }}>
           <Button title="Hoy" onPress={() => { setDate(new Date()) }} />
           <Button title="Mañana" onPress={() => { var date = new Date(); date.setDate(date.getDate() + 1); setDate(date) }} />
@@ -129,33 +162,48 @@ export default function App() {
 
         <Text style={{ textAlign: "center", fontWeight: "bold", marginTop: 20 }}>Alarmas</Text>
         <View style={{ marginTop: 10 }}>
-          <AlarmBox title={"Vacunar"} duration={30} />
-          <AlarmBox title={"Treure Sang"} duration={60} />
-          <AlarmBox title={"Comprovar aigua"} duration={90} />
+          {defaultAlarms.map(item => (
+            <AlarmBox key={item.id} item={item} />
+          ))}
         </View>
 
 
         <Text style={{ textAlign: "center", fontWeight: "bold", marginTop: 20 }}>Granja</Text>
         <View style={{ marginTop: 10 }}>
           <TextInput
-            style={{ height: 40, padding: 10, borderWidth: 1, padding: 10, borderRadius:10 }}
+            style={{ height: 40, padding: 10, borderWidth: 1, padding: 10, borderRadius: 10 }}
             onChangeText={setGranjaName}
             value={granjaName}
             placeholder="Nombre de la granja"
           />
         </View>
 
-        <Text style={{ textAlign: "center", fontWeight: "bold", marginTop: 20 }}>{date.toLocaleDateString("es-ES", options)}</Text>
         <View style={{ marginTop: 10 }}>
           <Button title="Programar" onPress={() => schedulePushNotification()} />
         </View>
 
         <View style={{ marginTop: 40 }}>
           <Text>Alarmas Programadas</Text>
+
+          <View style={styles.container}>
+            <View style={styles.tableRow}>
+              <Text style={styles.headerCell}>ID</Text>
+              <Text style={styles.headerCell}>Granja</Text>
+              <Text style={styles.headerCell}>Entrada</Text>
+              <Text style={styles.headerCell}>Alarmas</Text>
+            </View>
+            {entries.map(item => (
+              <View style={styles.tableRow} key={item.id}>
+                <Text style={styles.dataCell}>{item.id}</Text>
+                <Text style={styles.dataCell}>{item.granja}</Text>
+                <Text style={styles.dataCell}>{item.entrada}</Text>
+                <Text style={styles.dataCell}>---</Text>
+              </View>
+            ))}
+          </View>
         </View>
 
-
-        <Text style={{ marginTop: 40, textAlign: "right" }}>v.0.4</Text>
+        <Text style={{ marginVertical: 40, textAlign: "right" }}>v.0.4</Text>
       </ScrollView>
 
     </>
