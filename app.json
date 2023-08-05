@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "bf8bb780-e630-4fcc-8c70-38f8a11420ce"
+      }
+    },
+    "owner": "arnaucastells"
   }
 }
