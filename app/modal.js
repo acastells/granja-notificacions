@@ -28,6 +28,7 @@ export default function Modal() {
 							<Text>{item.days}</Text>
 							<Text>{item.triggers_at}</Text>
 							<Text>{item.notification_id}</Text>
+							<Text>{item.completed}</Text>
 						</View>
 					))}
 				</>

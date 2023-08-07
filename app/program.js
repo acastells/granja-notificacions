@@ -19,23 +19,17 @@ export default function App() {
     {
       "name": "Extracció Sang",
       "description": "S'ha de treure sang",
-      "days": 5,
-      "triggers_at": null,
-      "notification_id": null
+      "days": 5
     },
     {
       "name": "Vacunació PVRS",
       "description": "Trucar al veterenari per a que es vacuni aquesta explotació",
-      "days": 10,
-      "triggers_at": null,
-      "notification_id": null
+      "days": 10
     },
     {
       "name": "Comprovació nivells aigua",
       "description": "S'ha de comprovar que l'explotació animal estigui consumint el nivell d'aigua recomanat",
-      "days": 15,
-      "triggers_at": null,
-      "notification_id": null
+      "days": 15
     }
   ])
 
@@ -65,6 +59,7 @@ export default function App() {
 
       alarm.triggers_at = calculateTriggersAt(date, alarm.days)
       alarm.notification_id = notification_id
+      alarm.completed = false
       resultAlarms.push(alarm)
     }
 
