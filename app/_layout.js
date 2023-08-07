@@ -32,7 +32,7 @@ export default function AppLayout() {
 			/>
 			<Tabs.Screen
 				name="modal"
-				options={{ href: null }}
+				options={{ href: null,  }}
 			/>
 		</Tabs>
 	);

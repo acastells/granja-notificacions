@@ -1,11 +1,12 @@
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-import React, { useEffect, useRef, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, ScrollView, Text, View } from 'react-native';
-import { loadEntries } from '../src/StorageManager';
+import { deleteAllEntries, loadEntries } from '../src/StorageManager';
 
-import { customStyle as styles } from "../styles";
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { customStyle as styles } from "../styles";
 
 const projectId = Constants.expoConfig.extra.eas.projectId;
 Notifications.setNotificationHandler({
@@ -32,15 +33,23 @@ export default function App() {
 			console.log("RESPONSE", response);
 		});
 
-		loadEntries().then(entries => {
-			setEntries(entries)
-		})
-
 		return () => {
 			Notifications.removeNotificationSubscription(notificationListener.current);
 			Notifications.removeNotificationSubscription(responseListener.current);
 		};
 	}, []);
+
+
+	useFocusEffect(useCallback(() => {
+		loadEntries().then(entries => {
+			if (entries !== null) {
+				setEntries(entries)
+			} else {
+				setEntries([])
+			}
+		})
+	}))
+
 
 	async function registerForPushNotificationsAsync() {
 		let token;
@@ -76,30 +85,39 @@ export default function App() {
 		await Notifications.cancelScheduledNotificationAsync(notifId);
 	}
 
+	function handleDeleteAllAlarms() {
+		deleteAllEntries()
+		loadEntries().then(entries => {
+			if (entries !== null) {
+				setEntries(entries)
+			} else {
+				setEntries([])
+			}
+		})
+	}
+
 	return (
 		<>
 			<ScrollView style={{ paddingVertical: 10, paddingHorizontal: 20, backgroundColor: "#ffffef" }}>
 
-				<View style={{ backgroundColor: "#ffffaf", borderRadius: 10, padding: 10 }}>
-					<Text style={{ textAlign: "center", fontWeight: "bold" }}>Alarmas Programadas</Text>
-
+				<View style={{ backgroundColor: "#ffffaf", borderRadius: 10 }}>
 					<View style={styles.container}>
 						<View style={styles.tableRow}>
 							<Text style={styles.headerCell}>Granja</Text>
 							<Text style={styles.headerCell}>Entrada</Text>
 							<Text style={styles.headerCell}>Alarmas</Text>
 						</View>
-						{entries.map(item => (
-							<TouchableOpacity style={styles.tableRow} key={item.granja + item.entrada}>
+						{entries?.map(item => (
+							<TouchableOpacity style={styles.tableRow} key={item.granja + item.entrada} onPress={() => router.push("modal?granja=" + item.granja + "&entrada=" + item.entrada)}>
 								<Text style={styles.dataCell}>{item.granja}</Text>
-								<Text style={styles.dataCell}>{item.entrada}</Text>
+								<Text style={styles.dataCell}>{new Date(item.entrada).toLocaleDateString()}</Text>
 								<Text style={styles.dataCell}>{item.alarms.length} </Text>
 							</TouchableOpacity>
 						))}
 					</View>
 				</View>
 
-				<Text style={{ marginVertical: 40, textAlign: "right" }}>v.0.4</Text>
+				<Text style={{ marginVertical: 40, textAlign: "right" }}>v.0.6</Text>
 			</ScrollView>
 
 		</>

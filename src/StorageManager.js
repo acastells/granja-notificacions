@@ -18,3 +18,23 @@ export async function saveEntries(value) {
 		console.error(e)
 	}
 }
+
+export async function getEntry(granja, entrada) {
+	const jsonValue = await AsyncStorage.getItem('entries_json');
+	if (jsonValue != null) {
+		var entries = JSON.parse(jsonValue)		
+		return entries.filter((entry) => entry.granja == granja && entry.entrada == entrada)[0]
+	} else {
+		return null
+	}
+}
+
+export async function deleteAllEntries() {
+	try {
+		await AsyncStorage.clear();
+		const jsonValue = JSON.stringify([]);
+		await AsyncStorage.setItem('entries_json', jsonValue);
+	} catch (e) {
+		console.error(e)
+	}
+}
