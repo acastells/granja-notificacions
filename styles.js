@@ -14,9 +14,11 @@ export const customStyle = StyleSheet.create({
 		fontWeight: 'bold',
 		flex: 1,
 		marginRight: 8,
+		textAlign:"center"
 	},
 	dataCell: {
 		flex: 1,
 		marginRight: 8,
+		textAlign:"center"
 	},
 });

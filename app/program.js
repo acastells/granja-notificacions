@@ -4,59 +4,74 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 
 import Button from "../src/Button";
+import { calculateTriggersAt, getDate7AM, transformDateTo7AM } from '../src/DateManager';
+import { loadEntries, saveEntries } from '../src/StorageManager';
 
-const defaultAlarmsJSON = require('../defaultAlarms.json')
 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
 
 export default function App() {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(getDate7AM());
   const [granjaName, setGranjaName] = useState("")
 
-  const [defaultAlarms, setDefaultAlarms] = useState([])
+  const [selectedAlarms, setSelectedAlarms] = useState([
+    {
+      "name": "Extracció Sang",
+      "description": "S'ha de treure sang",
+      "days": 5,
+      "triggers_at": null,
+      "notification_id": null
+    },
+    {
+      "name": "Vacunació PVRS",
+      "description": "Trucar al veterenari per a que es vacuni aquesta explotació",
+      "days": 10,
+      "triggers_at": null,
+      "notification_id": null
+    },
+    {
+      "name": "Comprovació nivells aigua",
+      "description": "S'ha de comprovar que l'explotació animal estigui consumint el nivell d'aigua recomanat",
+      "days": 15,
+      "triggers_at": null,
+      "notification_id": null
+    }
+  ])
 
   useEffect(() => {
-    loadDefaultAlarms()
+    loadEntries().then(entries => {
+      console.log(entries)
+    })   
+    return () => { }
+  }, [])
 
-    return () => {
-    };
-  }, []);
+  async function schedulePushNotification() {
+    var resultAlarms = []
 
+    for (var alarm of selectedAlarms) {
+      var notification_id = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: alarm.name + " a " + granjaName,
+          body: alarm.description
+        },
+        trigger: { seconds: alarm.days },
+      });
 
-  async function loadDefaultAlarms() {
-    try {
-      const parsedData = JSON.parse(JSON.stringify(defaultAlarmsJSON));
-      setDefaultAlarms(parsedData);
-    } catch (error) {
-      console.error('Error reading or parsing JSON:', error);
+      alarm.triggers_at = calculateTriggersAt(date, alarm.days)
+      alarm.notification_id = notification_id
+      resultAlarms.push(alarm)
     }
-  }
 
-
-  async function schedulePushNotification(title = "title text", body = "body text", seconds = 5) {
-    var notifiId = await Notifications.scheduleNotificationAsync({
-      content: {
-        title: title,
-        body: body
-      },
-      trigger: { seconds: seconds },
-    });
 
     var new_entry = {
-      "granja": granjaName, "entrada": date.toISOString(), "alarms": [
-        {
-          "name": "name1",
-          "description": "descr1",
-          "triggers_at": "11111111",
-          "notification_id": notifiId
-        },
-      ]
+      "granja": granjaName, "entrada": date.toISOString(), "alarms": resultAlarms
     }
+    saveEntries([new_entry])
   }
 
 
   const onChangeDatePicker = (event, selectedDate) => {
-    const currentDate = selectedDate;
+    const currentDate = transformDateTo7AM(selectedDate);
     setDate(currentDate);
   };
 
@@ -88,13 +103,13 @@ export default function App() {
         <Text style={{ textAlign: "center", fontWeight: "bold" }}>{date.toLocaleDateString("es-ES", options)}</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-evenly", marginTop: 10 }}>
           <Button title="Hoy" onPress={() => { setDate(new Date()) }} />
-          <Button title="Mañana" onPress={() => { var date = new Date(); date.setDate(date.getDate() + 1); setDate(date) }} />
+          <Button title="Mañana" onPress={() => { var date = new Date(); date.setDate(date.getDate() + 1); setDate(transformDateTo7AM(date)) }} />
           <Button title="Otra fecha" onPress={() => showDatePicker()} />
         </View>
 
         <Text style={{ textAlign: "center", fontWeight: "bold", marginTop: 20 }}>Alarmas</Text>
         <View style={{ marginTop: 10 }}>
-          {defaultAlarms.map(item => (
+          {selectedAlarms.map(item => (
             <AlarmBox key={item.name + item.description} item={item} />
           ))}
         </View>

@@ -2,9 +2,10 @@ import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import React, { useEffect, useRef, useState } from 'react';
 import { Platform, ScrollView, Text, View } from 'react-native';
+import { loadEntries } from '../src/StorageManager';
 
 import { customStyle as styles } from "../styles";
-const entriesJSON = require('../savedEntries.json')
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const projectId = Constants.expoConfig.extra.eas.projectId;
 Notifications.setNotificationHandler({
@@ -31,22 +32,15 @@ export default function App() {
 			console.log("RESPONSE", response);
 		});
 
-		loadSavedEntries()
+		loadEntries().then(entries => {
+			setEntries(entries)
+		})
 
 		return () => {
 			Notifications.removeNotificationSubscription(notificationListener.current);
 			Notifications.removeNotificationSubscription(responseListener.current);
 		};
 	}, []);
-
-	async function loadSavedEntries() {
-		try {
-			const parsedData = JSON.parse(JSON.stringify(entriesJSON));
-			setEntries(parsedData);
-		} catch (error) {
-			console.error('Error reading or parsing JSON:', error);
-		}
-	}
 
 	async function registerForPushNotificationsAsync() {
 		let token;
@@ -96,11 +90,11 @@ export default function App() {
 							<Text style={styles.headerCell}>Alarmas</Text>
 						</View>
 						{entries.map(item => (
-							<View style={styles.tableRow} key={item.granja + item.entrada}>
+							<TouchableOpacity style={styles.tableRow} key={item.granja + item.entrada}>
 								<Text style={styles.dataCell}>{item.granja}</Text>
 								<Text style={styles.dataCell}>{item.entrada}</Text>
-								<Text style={styles.dataCell}>---</Text>
-							</View>
+								<Text style={styles.dataCell}>{item.alarms.length} </Text>
+							</TouchableOpacity>
 						))}
 					</View>
 				</View>
