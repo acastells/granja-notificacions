@@ -1,18 +1,19 @@
 [
 	{
-		"id": 1,
 		"granja": "CASTELLS1",
 		"entrada": "05/08/2023",
 		"alarms": [
 			{
 				"name": "name1",
 				"description": "descr1",
-				"triggers_at": "11111111"
+				"triggers_at": "11111111",
+				"notification_id": "111111"
 			},
 			{
 				"name": "name2",
 				"description": "descr2",
-				"triggers_at": "1113333"
+				"triggers_at": "1113333",
+				"notification_id": "111111"
 			}
 		]
 	}

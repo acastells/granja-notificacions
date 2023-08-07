@@ -1,8 +1,9 @@
 npm run start
 
-
 # TODO
-- program alarms button should insert a row into the bottom table
-- and save it to json
-- alarms should be set at 7am in the morning
+- diagram DB flow
+- async storage instead of json. Implement manager
+- actually scheduling all alarms
+- alarms should be set at 7am in the morning, create utils method
 - granja selector
+- implement modal of alarms

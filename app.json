@@ -2,6 +2,7 @@
   "expo": {
     "name": "granja-notificacions",
     "slug": "granja-notificacions",
+    "scheme": "granja-notificacions",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -37,6 +38,9 @@
     },
     "updates": {
       "url": "https://u.expo.dev/bf8bb780-e630-4fcc-8c70-38f8a11420ce"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
