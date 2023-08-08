@@ -107,16 +107,16 @@ export default function App() {
   }
 
   const AlarmBoxInput = (props) => {
-    const [name, setName] = useState("Nueva Alarma")
+    const [name, setName] = useState("-")
     const [days, setDays] = useState(10)
 
     return (<>
       <View style={{ padding: 5, marginVertical: 5, paddingHorizontal: 10, backgroundColor: "grey", borderRadius: 10, alignItems: "flex-start", justifyContent: "flex-start" }}>
         <View style={{}}>
           <Text>Nombre: </Text>
-          <TextInput onChangeText={setName} value={name} style={{ color: "white", }} placeholder={name}></TextInput>
+          <TextInput onChangeText={setName} style={{ color: "white", }} value={name} placeholder={name} placeholderTextColor={"white"}></TextInput>
           <Text>Dias: </Text>
-          <TextInput onChangeText={setDays} keyboardType='numeric' value={days.toString()} style={{ color: "white" }} placeholder={days.toString()}></TextInput>
+          <TextInput onChangeText={setDays} keyboardType='numeric' style={{ color: "white" }} value={days.toString()} placeholderTextColor={"white"} placeholder={days.toString()}></TextInput>
         </View>
       </View>
       <LittleButton title="Guardar" onPress={() => {

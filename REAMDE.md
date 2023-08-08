@@ -1,5 +1,4 @@
 npm run start
 
 # TODO
-- entry deleting
-- entry cancelling notifications
+- entry deleting and cancelling notifications
