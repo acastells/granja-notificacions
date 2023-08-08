@@ -1,12 +1,13 @@
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import * as Notifications from 'expo-notifications';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
+import { Picker } from '@react-native-picker/picker';
 
 import Button from "../src/Button";
 import { calculateTriggersAt, getDate7AM, transformDateTo7AM } from '../src/DateManager';
-import { loadEntries, saveEntries } from '../src/StorageManager';
+import { getExistentGranjas, saveEntry } from '../src/StorageManager';
 
 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
@@ -14,6 +15,9 @@ const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric
 export default function App() {
   const [date, setDate] = useState(getDate7AM());
   const [granjaName, setGranjaName] = useState("")
+
+  const [existentGranjas, setExistentGranjas] = useState([]);
+  const [selectedGranja, setSelectedGranja] = useState();
 
   const [selectedAlarms, setSelectedAlarms] = useState([
     {
@@ -34,9 +38,9 @@ export default function App() {
   ])
 
   useEffect(() => {
-    loadEntries().then(entries => {
-      console.log(entries)
-    })   
+    getExistentGranjas().then(granjas => {
+      setExistentGranjas(granjas)
+    })
     return () => { }
   }, [])
 
@@ -63,11 +67,10 @@ export default function App() {
       resultAlarms.push(alarm)
     }
 
-
     var new_entry = {
       "granja": granjaName, "entrada": date.toISOString(), "alarms": resultAlarms
     }
-    saveEntries([new_entry])
+    saveEntry(new_entry)
 
     router.push("/")
   }
@@ -119,16 +122,30 @@ export default function App() {
 
 
         <Text style={{ textAlign: "center", fontWeight: "bold", marginTop: 20 }}>Granja</Text>
-        <View style={{ marginTop: 10 }}>
-          <TextInput
-            style={{ height: 40, padding: 10, borderWidth: 1, padding: 10, borderRadius: 10 }}
-            onChangeText={setGranjaName}
-            value={granjaName}
-            placeholder="Nombre de la granja"
-          />
+        <View style={{ marginTop: 0, textAlign:"center"}}>
+          <Picker
+            style={{}}
+            selectedValue={selectedGranja}
+            onValueChange={(itemValue, itemIndex) => {
+              setSelectedGranja(itemValue)
+              setGranjaName(itemValue)
+            }}>
+            <Picker.Item key={""} label={"Nueva Granja"} value={""} />
+            {existentGranjas.map(item => (
+              <Picker.Item key={item} label={item} value={item} />
+            ))}
+          </Picker>
+          {selectedGranja === "" &&
+            <TextInput
+              style={{ height: 40, padding: 10, borderWidth: 1, padding: 10, borderRadius: 10 }}
+              onChangeText={setGranjaName}
+              value={granjaName}
+              placeholder="Nombre de la granja"
+            />
+          }
         </View>
 
-        <View style={{ marginTop: 10 }}>
+        <View style={{ marginTop: 40 }}>
           <Button title="Programar" onPress={() => schedulePushNotification()} />
         </View>
       </ScrollView>

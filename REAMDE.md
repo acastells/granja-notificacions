@@ -1,6 +1,7 @@
 npm run start
 
 # TODO
-- can program/store more than one entry 
-- granja selector
+- entry appending
+- entry deleting
 - add new custom alarms
+- ordenar main fecha

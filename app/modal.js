@@ -1,5 +1,5 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import Button from '../src/Button';
 import { getEntry } from '../src/StorageManager';
@@ -13,7 +13,9 @@ export default function Modal() {
 		getEntry(local.granja, local.entrada).then((entry) => {
 			setEntry(entry)
 		})
-	}))
+
+		return () => setEntry(null)
+	}, []))
 
 	return (
 		<ScrollView style={{ padding: 20 }}>
@@ -31,12 +33,11 @@ export default function Modal() {
 							<Text>{item.completed}</Text>
 						</View>
 					))}
+
+					<Button onPress={() => router.push("/")} title="Atrás"></Button>
 				</>
 			}
 
-
-
-			<Button onPress={() => router.push("/")} title="Atrás"></Button>
 		</ScrollView>
 	);
 }
