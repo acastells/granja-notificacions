@@ -43,7 +43,7 @@ export default function App() {
 	useFocusEffect(useCallback(() => {
 		loadEntries().then(entries => {
 			if (entries !== null) {
-				setEntries(entries)
+				setEntries(entries.reverse())
 			} else {
 				setEntries([])
 			}

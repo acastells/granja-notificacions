@@ -4,4 +4,3 @@ npm run start
 - entry appending
 - entry deleting
 - add new custom alarms
-- ordenar main fecha
