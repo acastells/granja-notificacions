@@ -1,12 +1,13 @@
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { Picker } from '@react-native-picker/picker';
 import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 
 import Button from "../src/Button";
 import { calculateTriggersAt, getDate7AM, transformDateTo7AM } from '../src/DateManager';
+import LittleButton from "../src/LittleButton";
 import { getExistentGranjas, saveEntry } from '../src/StorageManager';
 
 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -19,6 +20,7 @@ export default function App() {
   const [existentGranjas, setExistentGranjas] = useState([]);
   const [selectedGranja, setSelectedGranja] = useState();
 
+  const [enabledAddAlarm, setEnabledAddAlarm] = useState(false)
   const [selectedAlarms, setSelectedAlarms] = useState([
     {
       "name": "Extracció Sang",
@@ -104,6 +106,26 @@ export default function App() {
     </>)
   }
 
+  const AlarmBoxInput = (props) => {
+    const [name, setName] = useState("Nueva Alarma")
+    const [days, setDays] = useState(10)
+
+    return (<>
+      <View style={{ padding: 5, marginVertical: 5, paddingHorizontal: 10, backgroundColor: "grey", borderRadius: 10, alignItems: "flex-start", justifyContent: "flex-start" }}>
+        <View style={{}}>
+          <Text>Nombre: </Text>
+          <TextInput onChangeText={setName} value={name} style={{ color: "white", }} placeholder={name}></TextInput>
+          <Text>Dias: </Text>
+          <TextInput onChangeText={setDays} keyboardType='numeric' value={days.toString()} style={{ color: "white" }} placeholder={days.toString()}></TextInput>
+        </View>
+      </View>
+      <LittleButton title="Guardar" onPress={() => {
+        setSelectedAlarms([...selectedAlarms, { "name": name, "days": parseInt(days), "description": "" }])
+        setEnabledAddAlarm(false)
+      }}></LittleButton>
+    </>)
+  }
+
   return (
     <>
       <ScrollView style={{ paddingVertical: 10, paddingHorizontal: 20, backgroundColor: "#ffffef" }}>
@@ -115,11 +137,18 @@ export default function App() {
           <Button title="Otra fecha" onPress={() => showDatePicker()} />
         </View>
 
-        <Text style={{ textAlign: "center", fontWeight: "bold", marginTop: 20 }}>Alarmas</Text>
+        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
+          <Text style={{ textAlign: "center", fontWeight: "bold", }}>Alarmas</Text>
+          <LittleButton onPress={() => setEnabledAddAlarm(!enabledAddAlarm)} title="+"></LittleButton>
+        </View>
+
         <View style={{ marginTop: 10 }}>
           {selectedAlarms.map(item => (
             <AlarmBox key={item.name + item.description} item={item} />
           ))}
+          {enabledAddAlarm &&
+            <AlarmBoxInput />
+          }
         </View>
 
 
