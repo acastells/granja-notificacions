@@ -14,6 +14,8 @@ const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric
 
 
 export default function App() {
+  const MULTIPLIER_SECS_TO_DAYS = 86400
+
   const [date, setDate] = useState(getDate7AM());
   const [granjaName, setGranjaName] = useState("")
 
@@ -60,10 +62,10 @@ export default function App() {
           title: alarm.name + " a " + granjaName,
           body: alarm.description
         },
-        trigger: { seconds: alarm.days },
+        trigger: { seconds: alarm.days * MULTIPLIER_SECS_TO_DAYS },
       });
 
-      alarm.triggers_at = calculateTriggersAt(date, alarm.days)
+      alarm.triggers_at = calculateTriggersAt(new Date(date), alarm.days * MULTIPLIER_SECS_TO_DAYS)
       alarm.notification_id = notification_id
       alarm.completed = false
       resultAlarms.push(alarm)
@@ -71,12 +73,12 @@ export default function App() {
 
     var new_entry = {
       "granja": granjaName,
-      "entrada": transformDateTo7AM(date).toISOString(),
+      "entrada": transformDateTo7AM(date).toString(),
       "alarms": resultAlarms
     }
 
     saveEntry(new_entry).then(() => {
-      router.push("/")
+      router.replace("/")
     })
   }
 
@@ -133,7 +135,7 @@ export default function App() {
         <Text style={{ textAlign: "center", fontWeight: "bold" }}>{date.toLocaleDateString("es-ES", options)}</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-evenly", marginTop: 10 }}>
           <Button title="Hoy" onPress={() => { setDate(new Date()) }} />
-          <Button title="Mañana" onPress={() => { var date = new Date(); date.setDate(date.getDate() + 1); setDate(date) }} />
+          <Button title="Mañana" onPress={() => { var date_aux = new Date(); date_aux.setDate(date_aux.getDate() + 1); setDate(date_aux) }} />
           <Button title="Otra fecha" onPress={() => showDatePicker()} />
         </View>
 
