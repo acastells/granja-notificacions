@@ -15,17 +15,10 @@ export async function saveEntry(newEntry) {
 		var entries = jsonValue != null ? JSON.parse(jsonValue) : [];
 
 		// append alarms if existing
-
-		console.log(entries)
-
-		console.log(newEntry)
-
 		var existing = false
 		for (var entry of entries) {
 			if (entry.granja == newEntry.granja && entry.entrada == newEntry.entrada) {
 				entry.alarms = entry.alarms.concat(newEntry.alarms)
-				console.log("---1", entry.alarms)
-				console.log("---2", newEntry.alarms)
 				existing = true
 				break
 			}
@@ -75,6 +68,26 @@ export async function getExistentGranjas() {
 			}
 		}
 		return granjas
+	} catch (e) {
+		console.error(e)
+	}
+}
+
+export async function completeAlarm(notification_id) {
+	try {
+		const jsonValue = await AsyncStorage.getItem('entries_json');
+		var entries = JSON.parse(jsonValue)
+		for (var entry of entries) {
+			for (var alarm of entry.alarms) {
+				if (alarm.notification_id === notification_id) {
+					alarm.completed = true
+					break
+				}
+			}
+		}
+
+		entries = JSON.stringify(entries);
+		await AsyncStorage.setItem('entries_json', entries);
 	} catch (e) {
 		console.error(e)
 	}
