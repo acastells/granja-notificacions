@@ -114,7 +114,7 @@ export default function App() {
 								key={item.granja + item.entrada}
 								onPress={() => router.push("modal?granja=" + item.granja + "&entrada=" + item.entrada)}>
 								<Text style={styles.dataCell}>{item.granja}</Text>
-								<Text style={styles.dataCell}>{new Date(item.entrada).toLocaleDateString()}</Text>
+								<Text style={styles.dataCell}>{item.entrada}</Text>
 								<Text style={styles.dataCell}>{item.alarms.length} </Text>
 							</TouchableOpacity>
 						))}
