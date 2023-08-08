@@ -6,6 +6,7 @@ import { Platform, ScrollView, Text, View } from 'react-native';
 import { deleteAllEntries, loadEntries } from '../src/StorageManager';
 
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import Button from '../src/Button';
 import { customStyle as styles } from "../styles";
 
 const projectId = Constants.expoConfig.extra.eas.projectId;
@@ -48,7 +49,7 @@ export default function App() {
 				setEntries([])
 			}
 		})
-	}))
+	}, []))
 
 
 	async function registerForPushNotificationsAsync() {
@@ -98,7 +99,7 @@ export default function App() {
 
 	return (
 		<>
-			<ScrollView style={{ paddingVertical: 10, paddingHorizontal: 20, backgroundColor: "#ffffef" }}>
+			<ScrollView style={{ padding: 20 }}>
 
 				<View style={{ backgroundColor: "#ffffaf", borderRadius: 10 }}>
 					<View style={styles.container}>
@@ -108,7 +109,10 @@ export default function App() {
 							<Text style={styles.headerCell}>Alarmas</Text>
 						</View>
 						{entries?.map(item => (
-							<TouchableOpacity style={styles.tableRow} key={item.granja + item.entrada} onPress={() => router.push("modal?granja=" + item.granja + "&entrada=" + item.entrada)}>
+							<TouchableOpacity
+								style={[styles.tableRow, {}]}
+								key={item.granja + item.entrada}
+								onPress={() => router.push("modal?granja=" + item.granja + "&entrada=" + item.entrada)}>
 								<Text style={styles.dataCell}>{item.granja}</Text>
 								<Text style={styles.dataCell}>{new Date(item.entrada).toLocaleDateString()}</Text>
 								<Text style={styles.dataCell}>{item.alarms.length} </Text>
@@ -117,6 +121,8 @@ export default function App() {
 					</View>
 				</View>
 
+
+				<Button onPress={handleDeleteAllAlarms} title="borrar"></Button>
 				<Text style={{ marginVertical: 40, textAlign: "right" }}>v.0.6</Text>
 			</ScrollView>
 

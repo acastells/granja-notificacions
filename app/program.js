@@ -68,17 +68,19 @@ export default function App() {
     }
 
     var new_entry = {
-      "granja": granjaName, "entrada": date.toISOString(), "alarms": resultAlarms
+      "granja": granjaName,
+      "entrada": transformDateTo7AM(date).toISOString(),
+      "alarms": resultAlarms
     }
-    saveEntry(new_entry)
 
-    router.push("/")
+    saveEntry(new_entry).then(() => {
+      router.push("/")
+    })
   }
 
 
   const onChangeDatePicker = (event, selectedDate) => {
-    const currentDate = transformDateTo7AM(selectedDate);
-    setDate(currentDate);
+    setDate(selectedDate);
   };
 
   const showDatePicker = () => {
@@ -109,7 +111,7 @@ export default function App() {
         <Text style={{ textAlign: "center", fontWeight: "bold" }}>{date.toLocaleDateString("es-ES", options)}</Text>
         <View style={{ flexDirection: "row", justifyContent: "space-evenly", marginTop: 10 }}>
           <Button title="Hoy" onPress={() => { setDate(new Date()) }} />
-          <Button title="Mañana" onPress={() => { var date = new Date(); date.setDate(date.getDate() + 1); setDate(transformDateTo7AM(date)) }} />
+          <Button title="Mañana" onPress={() => { var date = new Date(); date.setDate(date.getDate() + 1); setDate(date) }} />
           <Button title="Otra fecha" onPress={() => showDatePicker()} />
         </View>
 
@@ -122,7 +124,7 @@ export default function App() {
 
 
         <Text style={{ textAlign: "center", fontWeight: "bold", marginTop: 20 }}>Granja</Text>
-        <View style={{ marginTop: 0, textAlign:"center"}}>
+        <View style={{ marginTop: 0, textAlign: "center" }}>
           <Picker
             style={{}}
             selectedValue={selectedGranja}
@@ -135,7 +137,7 @@ export default function App() {
               <Picker.Item key={item} label={item} value={item} />
             ))}
           </Picker>
-          {selectedGranja === "" &&
+          {(selectedGranja === "" || existentGranjas.length === 0) &&
             <TextInput
               style={{ height: 40, padding: 10, borderWidth: 1, padding: 10, borderRadius: 10 }}
               onChangeText={setGranjaName}
@@ -145,7 +147,7 @@ export default function App() {
           }
         </View>
 
-        <View style={{ marginTop: 40 }}>
+        <View style={{ marginVertical: 40 }}>
           <Button title="Programar" onPress={() => schedulePushNotification()} />
         </View>
       </ScrollView>

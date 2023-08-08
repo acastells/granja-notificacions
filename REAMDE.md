@@ -1,6 +1,6 @@
 npm run start
 
 # TODO
-- entry appending
-- entry deleting
 - add new custom alarms
+- entry deleting
+- entry cancelling notifications

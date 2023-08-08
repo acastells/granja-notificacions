@@ -12,10 +12,33 @@ export async function loadEntries() {
 export async function saveEntry(newEntry) {
 	try {
 		var jsonValue = await AsyncStorage.getItem('entries_json');
-		var json_dict = jsonValue != null ? JSON.parse(jsonValue) : [];
-		json_dict.push(newEntry)
-		jsonValue = JSON.stringify(json_dict);
-		await AsyncStorage.setItem('entries_json', jsonValue);
+		var entries = jsonValue != null ? JSON.parse(jsonValue) : [];
+
+		// append alarms if existing
+
+		console.log(entries)
+
+		console.log(newEntry)
+
+		var existing = false
+		for (var entry of entries) {
+			if (entry.granja == newEntry.granja && entry.entrada == newEntry.entrada) {
+				entry.alarms = entry.alarms.concat(newEntry.alarms)
+				console.log("---1", entry.alarms)
+				console.log("---2", newEntry.alarms)
+				existing = true
+				break
+			}
+		}
+
+		// save entry if it does not exist
+		if (!existing) {
+			entries.push(newEntry)
+		}
+
+		entries = JSON.stringify(entries);
+		await AsyncStorage.setItem('entries_json', entries);
+
 	} catch (e) {
 		console.error(e)
 	}

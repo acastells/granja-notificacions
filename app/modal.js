@@ -18,13 +18,14 @@ export default function Modal() {
 	}, []))
 
 	return (
-		<ScrollView style={{ padding: 20 }}>
+		<ScrollView style={{ margin: 20 }}>
 			{entry !== null &&
 				<>
-					<Text style={{ fontSize: 18, fontWeight: "bold", textAlign: "center" }}>{entry.granja}</Text>
-					<Text style={{ fontSize: 18, fontWeight: "bold", textAlign: "center" }}>{new Date(entry.entrada).toLocaleDateString()}</Text>
+					<Button onPress={() => router.push("/")} title="Atrás"></Button>
+					<Text style={{ fontSize: 18, fontWeight: "bold", textAlign: "center", marginTop: 10 }}>{entry.granja}</Text>
+					<Text style={{ fontSize: 18, fontWeight: "bold", textAlign: "center", marginBottom: 10 }}>{new Date(entry.entrada).toLocaleDateString()}</Text>
 					{entry.alarms?.map(item => (
-						<View key={item.name} style={{ backgroundColor: "grey", padding: 10, marginVertical: 5, borderRadius: 10 }}>
+						<View key={item.notification_id} style={{ backgroundColor: "grey", padding: 10, marginBottom: 10, borderRadius: 10 }}>
 							<Text>{item.name}</Text>
 							<Text>{item.description}</Text>
 							<Text>{item.days}</Text>

@@ -3,22 +3,24 @@ import { StyleSheet } from 'react-native';
 export const customStyle = StyleSheet.create({
 	container: {
 		flex: 1,
-		paddingVertical: 8,
+		paddingVertical: 10,
+		textAlign: "center"
 	},
 	tableRow: {
 		flexDirection: 'row',
-		justifyContent: 'space-between',
-		marginBottom: 8,
+		justifyContent: 'center',
+		textAlign: "center",
+		paddingBottom: 20
 	},
 	headerCell: {
 		fontWeight: 'bold',
 		flex: 1,
-		marginRight: 8,
-		textAlign:"center"
+		justifyContent: 'center',
+		textAlign: "center",
 	},
 	dataCell: {
 		flex: 1,
-		marginRight: 8,
-		textAlign:"center"
+		justifyContent: 'center',
+		textAlign: "center",
 	},
 });
