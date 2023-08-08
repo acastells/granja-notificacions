@@ -17,5 +17,5 @@ export function transformDateTo7AM(date) {
 
 export function calculateTriggersAt(date, duration) {
 	date.setSeconds(date.getSeconds() + duration)
-	return date.toLocaleString()
+	return date.toString()
 }
