@@ -36,9 +36,6 @@ export default function Modal() {
 		var triggers_at = new Date(alarm.triggers_at)
 		var today = new Date()
 
-		console.log("triggers at", triggers_at)
-		console.log("today", today)
-
 		if (alarm.completed == true && triggers_at < today) {
 			return good
 		} else if (alarm.completed == false && triggers_at < today) {
