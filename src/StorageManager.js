@@ -41,7 +41,9 @@ export async function getEntry(granja, entrada) {
 	const jsonValue = await AsyncStorage.getItem('entries_json');
 	if (jsonValue != null) {
 		var entries = JSON.parse(jsonValue)
-		return entries.filter((entry) => entry.granja == granja && entry.entrada == entrada)[0]
+		var filtered_entries = entries.filter((entry) => entry.granja == granja && entry.entrada == entrada)
+		var first_entry = filtered_entries[0]
+		return first_entry
 	} else {
 		return null
 	}
