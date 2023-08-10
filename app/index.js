@@ -86,6 +86,8 @@ export default function MainScreen() {
 
 	function handleDeleteAllAlarms() {
 		deleteAllEntries()
+		Notifications.cancelAllScheduledNotificationsAsync()
+		
 		loadEntries().then(entries => {
 			if (entries !== null) {
 				setEntries(entries)
