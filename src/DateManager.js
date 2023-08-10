@@ -21,3 +21,8 @@ export function calculateTriggersAt_Timestamp(date, duration) {
 	date.setSeconds(date.getSeconds() + duration)
 	return date.getTime()
 }
+
+export function timestampToLocalString(timestamp) {
+	var date = new Date(timestamp)
+	return date.toLocaleDateString()
+}

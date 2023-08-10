@@ -84,10 +84,6 @@ export default function MainScreen() {
 		return token;
 	}
 
-	async function cancelNotification(notifId) {
-		await Notifications.cancelScheduledNotificationAsync(notifId);
-	}
-
 	function handleDeleteAllAlarms() {
 		deleteAllEntries()
 		loadEntries().then(entries => {
