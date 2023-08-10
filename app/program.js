@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 
 import Button from "../src/Button";
-import { calculateTriggersAt, getDate7AM, transformDateTo7AM } from '../src/DateManager';
+import { calculateTriggersAt_Timestamp, getDate7AM, transformDateTo7AM_Timestamp } from '../src/DateManager';
 import LittleButton from "../src/LittleButton";
 import { getExistentGranjas, saveEntry } from '../src/StorageManager';
 
@@ -65,7 +65,7 @@ export default function App() {
         trigger: { seconds: alarm.days * MULTIPLIER_SECS_TO_DAYS },
       });
 
-      alarm.triggers_at = calculateTriggersAt(new Date(date), alarm.days * MULTIPLIER_SECS_TO_DAYS)
+      alarm.triggers_at = calculateTriggersAt_Timestamp(new Date(date), alarm.days * MULTIPLIER_SECS_TO_DAYS)
       alarm.notification_id = notification_id
       alarm.completed = false
       resultAlarms.push(alarm)
@@ -73,7 +73,7 @@ export default function App() {
 
     var new_entry = {
       "granja": granjaName,
-      "entrada": transformDateTo7AM(date).toString(),
+      "entrada": transformDateTo7AM_Timestamp(date),
       "alarms": resultAlarms
     }
 
