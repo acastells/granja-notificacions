@@ -1,7 +1,7 @@
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
-import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 
@@ -13,7 +13,9 @@ import { getExistentGranjas, saveEntry } from '../src/StorageManager';
 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
 
-export default function App() {
+export default function ProgramScreen() {
+  const navigation = useNavigation();
+
   const MULTIPLIER_SECS_TO_DAYS = 86400
 
   const [date, setDate] = useState(getDate7AM());
@@ -78,7 +80,7 @@ export default function App() {
     }
 
     saveEntry(new_entry).then(() => {
-      router.replace("/")
+      navigation.navigate("Main")
     })
   }
 

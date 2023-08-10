@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-import { router, useFocusEffect } from 'expo-router';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, ScrollView, Text, View } from 'react-native';
 import { deleteAllEntries, loadEntries } from '../src/StorageManager';
@@ -18,7 +18,9 @@ Notifications.setNotificationHandler({
 	}),
 });
 
-export default function App() {
+export default function MainScreen() {
+	const navigation = useNavigation();
+
 	const notificationListener = useRef();
 	const responseListener = useRef();
 	const [entries, setEntries] = useState([])
@@ -112,7 +114,7 @@ export default function App() {
 							<TouchableOpacity
 								style={[styles.tableRow, {}]}
 								key={item.granja + item.entrada}
-								onPress={() => router.push("modal?granja=" + item.granja + "&entrada=" + item.entrada)}>
+								onPress={() => navigation.navigate("Modal", { granja: item.granja, entrada: item.entrada })}>
 								<Text style={styles.dataCell}>{item.granja}</Text>
 								<Text style={styles.dataCell}>{item.entrada}</Text>
 								<Text style={styles.dataCell}>{item.alarms.length} </Text>

@@ -1,11 +1,11 @@
-import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import Button from '../src/Button';
 import { completeAlarm, getEntry } from '../src/StorageManager';
 
-export default function Modal() {
-	const local = useLocalSearchParams();
+export default function DetailScreen(props) {
+	var navigation = useNavigation()
 
 	const [entry, setEntry] = useState(null)
 
@@ -21,7 +21,8 @@ export default function Modal() {
 
 
 	function loadEntry() {
-		getEntry(local.granja, local.entrada).then((entry) => {
+		console.log(props)				
+		getEntry(props.route.params.granja, props.route.params.entrada).then((entry) => {
 			setEntry(entry)
 		})
 	}
@@ -78,7 +79,7 @@ export default function Modal() {
 						</View>
 					))}
 
-					<Button onPress={() => router.push("/")} title="Atrás"></Button>
+					<Button onPress={() => navigation.navigate("Main")} title="Atrás"></Button>
 				</>
 			}
 
