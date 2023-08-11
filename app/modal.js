@@ -53,7 +53,7 @@ export default function DetailScreen(props) {
 	}
 
 	return (
-		<ScrollView style={{ margin: 20 }}>
+		<ScrollView style={{ margin: 20, backgroundColor: "#ffffef" }}>
 			{entry !== null &&
 				<>
 					<View style={{ flexDirection: "row" }}>

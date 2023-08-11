@@ -1,8 +1,8 @@
 import Constants from 'expo-constants';
 import * as Updates from 'expo-updates';
 
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, ScrollView, Text, View } from 'react-native';
 import { deleteAllEntries, loadEntries } from '../src/StorageManager';
@@ -27,9 +27,9 @@ export default function MainScreen() {
 	const responseListener = useRef();
 	const [entries, setEntries] = useState([])
 
-	useEffect(() => {
-		onFetchUpdateAsync()
+	const [commitDeleteEntries, setCommitDeleteEntries] = useState(false)
 
+	useEffect(() => {
 		registerForPushNotificationsAsync()
 
 		notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -40,6 +40,8 @@ export default function MainScreen() {
 			console.log("RESPONSE RECEIVED FROM NOTIFICATION");
 		});
 
+		onFetchUpdateAsync()
+
 		return () => {
 			Notifications.removeNotificationSubscription(notificationListener.current);
 			Notifications.removeNotificationSubscription(responseListener.current);
@@ -49,16 +51,14 @@ export default function MainScreen() {
 
 	async function onFetchUpdateAsync() {
 		try {
-		  const update = await Updates.checkForUpdateAsync();
-	
-		  if (update.isAvailable) {
-			await Updates.fetchUpdateAsync();
-			await Updates.reloadAsync();
-		  }
-		} catch (error) {
-		  alert(`Error fetching latest Expo update: ${error}`);
-		}
-	  }
+			const update = await Updates.checkForUpdateAsync();
+
+			if (update.isAvailable) {
+				await Updates.fetchUpdateAsync();
+				await Updates.reloadAsync();
+			}
+		} catch (error) { }
+	}
 
 	useFocusEffect(useCallback(() => {
 		loadEntries().then(entries => {
@@ -102,23 +102,27 @@ export default function MainScreen() {
 	}
 
 	function handleDeleteAllAlarms() {
-		deleteAllEntries()
-		Notifications.cancelAllScheduledNotificationsAsync()
-		
-		loadEntries().then(entries => {
-			if (entries !== null) {
-				setEntries(entries)
-			} else {
-				setEntries([])
-			}
-		})
+		if (commitDeleteEntries) {
+			deleteAllEntries()
+			Notifications.cancelAllScheduledNotificationsAsync()
+
+			loadEntries().then(entries => {
+				if (entries !== null) {
+					setEntries(entries)
+				} else {
+					setEntries([])
+				}
+			})
+		}
+		setCommitDeleteEntries(!commitDeleteEntries)
+
 	}
 
 	return (
 		<>
-			<ScrollView style={{ padding: 20 }}>
+			<ScrollView style={{ paddingHorizontal: 20, backgroundColor: "#ffffef" }}>
 
-				<View style={{ backgroundColor: "#ffffaf", borderRadius: 10 }}>
+				<View style={{ backgroundColor: "#ffffaf", borderRadius: 10, marginVertical: 20 }}>
 					<View style={styles.container}>
 						<View style={styles.tableRow}>
 							<Text style={styles.headerCell}>Granja</Text>
@@ -138,11 +142,13 @@ export default function MainScreen() {
 					</View>
 				</View>
 
+				<Button
+					onPress={handleDeleteAllAlarms}
+					title={commitDeleteEntries == false ? "Borrar" : "Seguro?"}>
+				</Button>
+				<Text style={{ marginVertical: 20, textAlign: "right" }}>v.0.7</Text>
 
-				<Button onPress={handleDeleteAllAlarms} title="borrar"></Button>
-				<Text style={{ marginVertical: 40, textAlign: "right" }}>v.0.7</Text>
 			</ScrollView>
-
 		</>
 	);
 };

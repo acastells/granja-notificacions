@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import MainScreen from './app/index';
 import DetailScreen from './app/modal';
 import ProgramScreen from './app/program';
@@ -13,9 +14,13 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 function customHeader() {
-	return (<View style={{ flexDirection: "row", paddingHorizontal: 20, fontWeight: "bold", marginTop: 50, paddingBottom: 10, borderBottomWidth: 1 }}>
-		<Text style={{ textAlign: "left", fontWeight: "bold", fontSize: 24 }}>GLOBAL ALARMS</Text>
-	</View>)
+	return (
+		<SafeAreaView>
+			<View style={{ flexDirection: "row", paddingHorizontal: 20, paddingVertical: 10, fontWeight: "bold", borderBottomWidth: 1 }}>
+				<Text style={{ textAlign: "left", fontWeight: "bold", fontSize: 24 }}>GLOBAL ALARMS</Text>
+			</View>
+		</SafeAreaView>
+	)
 }
 
 function TabNavigator() {
