@@ -9,6 +9,7 @@ import { deleteAllEntries, loadEntries } from '../src/StorageManager';
 
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Button from '../src/Button';
+import { timestampToLocalString } from '../src/DateManager';
 import { customStyle as styles } from "../styles";
 
 const projectId = Constants.expoConfig.extra.eas.projectId;
@@ -135,7 +136,7 @@ export default function MainScreen() {
 								key={item.granja + item.entrada}
 								onPress={() => navigation.navigate("Modal", { granja: item.granja, entrada: item.entrada })}>
 								<Text style={styles.dataCell}>{item.granja}</Text>
-								<Text style={styles.dataCell}>{item.entrada}</Text>
+								<Text style={styles.dataCell}>{timestampToLocalString(item.entrada)}</Text>
 								<Text style={styles.dataCell}>{item.alarms.length} </Text>
 							</TouchableOpacity>
 						))}
@@ -146,7 +147,7 @@ export default function MainScreen() {
 					onPress={handleDeleteAllAlarms}
 					title={commitDeleteEntries == false ? "Borrar" : "Seguro?"}>
 				</Button>
-				<Text style={{ marginVertical: 20, textAlign: "right" }}>v.0.9</Text>
+				<Text style={{ marginVertical: 20, textAlign: "right" }}>v.0.10</Text>
 
 			</ScrollView>
 		</>
