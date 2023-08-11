@@ -1,4 +1,6 @@
 import Constants from 'expo-constants';
+import * as Updates from 'expo-updates';
+
 import * as Notifications from 'expo-notifications';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -26,6 +28,8 @@ export default function MainScreen() {
 	const [entries, setEntries] = useState([])
 
 	useEffect(() => {
+		onFetchUpdateAsync()
+
 		registerForPushNotificationsAsync()
 
 		notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -42,6 +46,19 @@ export default function MainScreen() {
 		};
 	}, []);
 
+
+	async function onFetchUpdateAsync() {
+		try {
+		  const update = await Updates.checkForUpdateAsync();
+	
+		  if (update.isAvailable) {
+			await Updates.fetchUpdateAsync();
+			await Updates.reloadAsync();
+		  }
+		} catch (error) {
+		  alert(`Error fetching latest Expo update: ${error}`);
+		}
+	  }
 
 	useFocusEffect(useCallback(() => {
 		loadEntries().then(entries => {
@@ -123,7 +140,7 @@ export default function MainScreen() {
 
 
 				<Button onPress={handleDeleteAllAlarms} title="borrar"></Button>
-				<Text style={{ marginVertical: 40, textAlign: "right" }}>v.0.6</Text>
+				<Text style={{ marginVertical: 40, textAlign: "right" }}>v.0.7</Text>
 			</ScrollView>
 
 		</>
