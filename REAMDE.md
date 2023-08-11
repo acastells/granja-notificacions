@@ -1,4 +1,6 @@
 npm run start
+eas build --profile development --platform android
 
 # TODO
-- icons and build
+- expo updates
+- ojo status bar
