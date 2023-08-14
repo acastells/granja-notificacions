@@ -17,7 +17,7 @@ const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric
 export default function ProgramScreen() {
   const navigation = useNavigation();
 
-  const MULTIPLIER_SECS_TO_DAYS = 2
+  const MULTIPLIER_SECS_TO_DAYS = 86400
 
   const [date, setDate] = useState(getDate7AM());
   const [granjaName, setGranjaName] = useState("")
