@@ -62,6 +62,7 @@ export default function MainScreen() {
 	}
 
 	useFocusEffect(useCallback(() => {
+		setCommitDeleteEntries(false)
 		loadEntries().then(entries => {
 			if (entries !== null) {
 				setEntries(entries.reverse())
@@ -147,7 +148,7 @@ export default function MainScreen() {
 					onPress={handleDeleteAllAlarms}
 					title={commitDeleteEntries == false ? "Borrar" : "Seguro?"}>
 				</Button>
-				<Text style={{ marginVertical: 20, textAlign: "right" }}>v.0.10</Text>
+				<Text style={{ marginVertical: 20, textAlign: "right" }}>v.0.11</Text>
 
 			</ScrollView>
 		</>
