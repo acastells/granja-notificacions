@@ -17,13 +17,13 @@ const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric
 export default function ProgramScreen() {
   const navigation = useNavigation();
 
-  const MULTIPLIER_SECS_TO_DAYS = 86400
+  const MULTIPLIER_SECS_TO_DAYS = 2
 
   const [date, setDate] = useState(getDate7AM());
   const [granjaName, setGranjaName] = useState("")
 
   const [existentGranjas, setExistentGranjas] = useState([]);
-  const [selectedGranja, setSelectedGranja] = useState();
+  const [selectedGranja, setSelectedGranja] = useState("");
 
   const [enabledAddAlarm, setEnabledAddAlarm] = useState(false)
   const [selectedAlarms, setSelectedAlarms] = useState([
@@ -78,6 +78,10 @@ export default function ProgramScreen() {
         resultAlarms.push(alarm)
       }
     }
+
+    Notifications.getAllScheduledNotificationsAsync().then(notifications => {
+      console.log(notifications)
+    })
 
     var new_entry = {
       "granja": granjaName,
