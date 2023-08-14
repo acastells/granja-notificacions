@@ -1,11 +1,12 @@
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 
 import Button from "../src/Button";
+import { Checkbox } from '../src/CheckBox';
 import { calculateTriggersAt_Timestamp, getDate7AM, transformDateTo7AM_Timestamp } from '../src/DateManager';
 import LittleButton from "../src/LittleButton";
 import { getExistentGranjas, saveEntry } from '../src/StorageManager';
@@ -29,26 +30,29 @@ export default function ProgramScreen() {
     {
       "name": "Extracció Sang",
       "description": "S'ha de treure sang",
-      "days": 5
+      "days": 5,
+      "selected": true
     },
     {
       "name": "Vacunació PVRS",
       "description": "Trucar al veterenari per a que es vacuni aquesta explotació",
-      "days": 10
+      "days": 10,
+      "selected": true
     },
     {
       "name": "Comprovació nivells aigua",
       "description": "S'ha de comprovar que l'explotació animal estigui consumint el nivell d'aigua recomanat",
-      "days": 15
+      "days": 15,
+      "selected": true
     }
   ])
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     getExistentGranjas().then(granjas => {
       setExistentGranjas(granjas)
     })
     return () => { }
-  }, [])
+  }, []))
 
   async function schedulePushNotification() {
     if (!granjaName.trim()) {
@@ -59,18 +63,20 @@ export default function ProgramScreen() {
     var resultAlarms = []
 
     for (var alarm of selectedAlarms) {
-      var notification_id = await Notifications.scheduleNotificationAsync({
-        content: {
-          title: alarm.name + " a " + granjaName,
-          body: alarm.description
-        },
-        trigger: { seconds: alarm.days * MULTIPLIER_SECS_TO_DAYS },
-      });
+      if (alarm.selected == true) {
+        var notification_id = await Notifications.scheduleNotificationAsync({
+          content: {
+            title: alarm.name + " a " + granjaName,
+            body: alarm.description
+          },
+          trigger: { seconds: alarm.days * MULTIPLIER_SECS_TO_DAYS },
+        });
 
-      alarm.triggers_at = calculateTriggersAt_Timestamp(new Date(date), alarm.days * MULTIPLIER_SECS_TO_DAYS)
-      alarm.notification_id = notification_id
-      alarm.completed = false
-      resultAlarms.push(alarm)
+        alarm.triggers_at = calculateTriggersAt_Timestamp(new Date(date), alarm.days * MULTIPLIER_SECS_TO_DAYS)
+        alarm.notification_id = notification_id
+        alarm.completed = false
+        resultAlarms.push(alarm)
+      }
     }
 
     var new_entry = {
@@ -99,18 +105,31 @@ export default function ProgramScreen() {
   };
 
 
-  const AlarmBox = (props) => {
+  const AlarmBox = ({ item, selectedAlarms, setSelectedAlarms }) => {
+    function toggleSelect() {
+      var new_alarms = [...selectedAlarms];
+
+      for (var i = 0; i < new_alarms.length; i++) {
+        if (new_alarms[i].name === item.name) {
+          new_alarms[i].selected = !new_alarms[i].selected;
+          setSelectedAlarms(new_alarms);
+          break;
+        }
+      }
+    }
+
     return (<>
       <View style={{ padding: 5, marginVertical: 5, paddingHorizontal: 10, backgroundColor: "grey", borderRadius: 10, alignItems: "flex-start", justifyContent: "flex-start" }}>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={{ flex: 6, color: "white", }}>{props.item.name}</Text>
-          <Text style={{ flex: 4, color: "white", textAlign: "right" }}>a los {props.item.days} dias</Text>
+        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+          <Checkbox onPress={() => toggleSelect()} checked={item.selected} />
+          <Text style={{ flex: 6, color: "white", marginLeft: 10 }}>{item.name}</Text>
+          <Text style={{ flex: 4, color: "white", textAlign: "right" }}>a los {item.days} dias</Text>
         </View>
       </View>
     </>)
   }
 
-  const AlarmBoxInput = (props) => {
+  const AlarmBoxInput = () => {
     const [name, setName] = useState("-")
     const [days, setDays] = useState(10)
 
@@ -124,7 +143,7 @@ export default function ProgramScreen() {
         </View>
       </View>
       <LittleButton title="Guardar" onPress={() => {
-        setSelectedAlarms([...selectedAlarms, { "name": name, "days": parseInt(days), "description": "" }])
+        setSelectedAlarms([...selectedAlarms, { "name": name, "days": parseInt(days), "description": "", "selected": true }])
         setEnabledAddAlarm(false)
       }}></LittleButton>
     </>)
@@ -148,7 +167,7 @@ export default function ProgramScreen() {
 
         <View style={{ marginTop: 10 }}>
           {selectedAlarms.map(item => (
-            <AlarmBox key={item.name + item.description} item={item} />
+            <AlarmBox key={item.name + item.description} item={item} selectedAlarms={selectedAlarms} setSelectedAlarms={setSelectedAlarms} />
           ))}
           {enabledAddAlarm &&
             <AlarmBoxInput />
@@ -157,7 +176,7 @@ export default function ProgramScreen() {
 
 
         <Text style={{ textAlign: "center", fontWeight: "bold", marginTop: 20 }}>Granja</Text>
-        <View style={{ marginTop: 0, textAlign: "center" }}>
+        <View style={{ textAlign: "center" }}>
           <Picker
             style={{}}
             selectedValue={selectedGranja}
