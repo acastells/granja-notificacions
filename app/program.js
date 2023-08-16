@@ -28,23 +28,53 @@ export default function ProgramScreen() {
   const [enabledAddAlarm, setEnabledAddAlarm] = useState(false)
   const [selectedAlarms, setSelectedAlarms] = useState([
     {
-      "name": "Extracció Sang",
-      "description": "S'ha de treure sang",
-      "days": 5,
+      "name": "Punxar Marbo 1ra",
+      "description": "S'ha de punxar Marbo per primera vegada",
+      "days": 2,
       "selected": true
     },
     {
-      "name": "Vacunació PVRS",
-      "description": "Trucar al veterenari per a que es vacuni aquesta explotació",
+      "name": "Punxar Marbo 2na",
+      "description": "S'ha de punxar Marbo per segona vegada",
+      "days": 4,
+      "selected": true
+    },
+    {
+      "name": "Vacunar Circoflex",
+      "description": "S'ha de vacunar Circoflex",
       "days": 10,
       "selected": true
     },
     {
-      "name": "Comprovació nivells aigua",
-      "description": "S'ha de comprovar que l'explotació animal estigui consumint el nivell d'aigua recomanat",
-      "days": 15,
+      "name": "Agafar mostres d'aigua",
+      "description": "S'ha d'agafar mostres d'aigua per fer un anàlisi",
+      "days": 10,
       "selected": true
-    }
+    },
+    {
+      "name": "Vacunar Aujesky 1ra",
+      "description": "S'ha de vacunar Aujesky per primera vegada",
+      "days": 30,
+      "selected": true
+    },
+    {
+      "name": "Medicar Fluvenol",
+      "description": "S'ha de medicar Fluvenol",
+      "days": 30,
+      "selected": true
+    },
+    {
+      "name": "Vacunar Aujesky 2na",
+      "description": "S'ha de vacunar Aujesky per segona vegada",
+      "days": 50,
+      "selected": true
+    },
+    {
+      "name": "Treure Sang",
+      "description": "S'ha de treure sang",
+      "days": 90,
+      "selected": true
+    },
   ])
 
   useFocusEffect(useCallback(() => {
@@ -78,10 +108,6 @@ export default function ProgramScreen() {
         resultAlarms.push(alarm)
       }
     }
-
-    Notifications.getAllScheduledNotificationsAsync().then(notifications => {
-      console.log(notifications)
-    })
 
     var new_entry = {
       "granja": granjaName,
@@ -123,7 +149,7 @@ export default function ProgramScreen() {
     }
 
     return (<>
-      <View style={{ padding: 5, marginVertical: 5, paddingHorizontal: 10, backgroundColor: "grey", borderRadius: 10, alignItems: "flex-start", justifyContent: "flex-start" }}>
+      <View style={{ padding: 5, marginVertical: 2, paddingHorizontal: 10, backgroundColor: "grey", borderRadius: 10, alignItems: "flex-start", justifyContent: "flex-start" }}>
         <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
           <Checkbox onPress={() => toggleSelect()} checked={item.selected} />
           <Text style={{ flex: 6, color: "white", marginLeft: 10 }}>{item.name}</Text>
