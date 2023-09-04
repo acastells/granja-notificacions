@@ -117,7 +117,17 @@ export default function MainScreen() {
 			})
 		}
 		setCommitDeleteEntries(!commitDeleteEntries)
+	}
 
+	function getInfoAlarms(alarms) {
+		var completedAlarms = alarms.filter(alarm => alarm.completed === true).length;
+		var totalAlarms = alarms.length
+
+		return (
+			<Text style={{ color: completedAlarms === totalAlarms ? "green" : "orange" }}>
+				{completedAlarms.toString()}/{totalAlarms.toString()}
+			</Text>
+		)
 	}
 
 	return (
@@ -129,7 +139,7 @@ export default function MainScreen() {
 						<View style={styles.tableRow}>
 							<Text style={styles.headerCell}>Granja</Text>
 							<Text style={styles.headerCell}>Entrada</Text>
-							<Text style={styles.headerCell}>Alarmas</Text>
+							<Text style={styles.headerCell}>Alarmas completadas</Text>
 						</View>
 						{entries?.map(item => (
 							<TouchableOpacity
@@ -138,7 +148,7 @@ export default function MainScreen() {
 								onPress={() => navigation.navigate("Modal", { granja: item.granja, entrada: item.entrada })}>
 								<Text style={styles.dataCell}>{item.granja}</Text>
 								<Text style={styles.dataCell}>{timestampToLocalString(item.entrada)}</Text>
-								<Text style={styles.dataCell}>{item.alarms.length} </Text>
+								<Text style={styles.dataCell}>{getInfoAlarms(item.alarms)} </Text>
 							</TouchableOpacity>
 						))}
 					</View>
@@ -148,7 +158,7 @@ export default function MainScreen() {
 					onPress={handleDeleteAllAlarms}
 					title={commitDeleteEntries == false ? "Borrar" : "Seguro?"}>
 				</Button>
-				<Text style={{ marginVertical: 20, textAlign: "right" }}>v.0.15</Text>
+				<Text style={{ marginVertical: 20, textAlign: "right" }}>v.0.16</Text>
 
 			</ScrollView>
 		</>
