@@ -1,5 +1,7 @@
 //getTime() -> timestamp
 
+export const MULTIPLIER_SECS_TO_DAYS = 86400
+
 export function getDate7AM() {
 	var date = new Date()
 	date.setHours(7)

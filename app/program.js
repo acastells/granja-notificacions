@@ -7,7 +7,7 @@ import { ScrollView, Text, TextInput, View } from 'react-native';
 
 import Button from "../src/Button";
 import { Checkbox } from '../src/CheckBox';
-import { calculateTriggersAt_Timestamp, getDate7AM, transformDateTo7AM_Timestamp } from '../src/DateManager';
+import { calculateTriggersAt_Timestamp, getDate7AM, transformDateTo7AM_Timestamp, MULTIPLIER_SECS_TO_DAYS } from '../src/DateManager';
 import LittleButton from "../src/LittleButton";
 import { getExistentGranjas, saveEntry } from '../src/StorageManager';
 
@@ -16,8 +16,6 @@ const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric
 
 export default function ProgramScreen() {
   const navigation = useNavigation();
-
-  const MULTIPLIER_SECS_TO_DAYS = 86400
 
   const [date, setDate] = useState(getDate7AM());
   const [granjaName, setGranjaName] = useState("")
@@ -100,6 +98,7 @@ export default function ProgramScreen() {
             body: alarm.description
           },
           trigger: { seconds: alarm.days * MULTIPLIER_SECS_TO_DAYS },
+          repeats: true
         });
 
         alarm.triggers_at = calculateTriggersAt_Timestamp(new Date(date), alarm.days * MULTIPLIER_SECS_TO_DAYS)
