@@ -148,7 +148,7 @@ export default function MainScreen() {
 					onPress={handleDeleteAllAlarms}
 					title={commitDeleteEntries == false ? "Borrar" : "Seguro?"}>
 				</Button>
-				<Text style={{ marginVertical: 20, textAlign: "right" }}>v.0.14</Text>
+				<Text style={{ marginVertical: 20, textAlign: "right" }}>v.0.15</Text>
 
 			</ScrollView>
 		</>
