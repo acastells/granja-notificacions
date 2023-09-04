@@ -36,7 +36,9 @@ export default function DetailScreen(props) {
 				body: alarm.description
 			},
 			trigger: { seconds: alarm.days * MULTIPLIER_SECS_TO_DAYS },
-			repeats: true
+			repeats: true,
+			autoDismiss: true,
+			sticky: false
 		});
 		descompleteAlarm(old_notification_id, new_notification_id).then(() => {
 			loadEntry()

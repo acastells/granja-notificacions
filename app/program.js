@@ -98,7 +98,9 @@ export default function ProgramScreen() {
             body: alarm.description
           },
           trigger: { seconds: alarm.days * MULTIPLIER_SECS_TO_DAYS },
-          repeats: true
+          repeats: true,
+          autoDismiss: true,
+          sticky: false
         });
 
         alarm.triggers_at = calculateTriggersAt_Timestamp(new Date(date), alarm.days * MULTIPLIER_SECS_TO_DAYS)

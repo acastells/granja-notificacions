@@ -9,15 +9,29 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import MainScreen from './app/index';
 import DetailScreen from './app/modal';
 import ProgramScreen from './app/program';
+import LittleButton from './src/LittleButton';
+
+import * as Notifications from 'expo-notifications';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
+
+function handleVersionButton() {
+	Notifications.getAllScheduledNotificationsAsync().then(scheduled_notifications => {
+		console.log(scheduled_notifications.length)
+		for (var notification of scheduled_notifications) { 
+			console.log(notification)
+		}
+	})
+}
 
 function customHeader() {
 	return (
 		<SafeAreaView>
 			<View style={{ flexDirection: "row", paddingHorizontal: 20, paddingVertical: 10, fontWeight: "bold", borderBottomWidth: 1 }}>
 				<Text style={{ textAlign: "left", fontWeight: "bold", fontSize: 24 }}>GLOBAL ALARMS</Text>
+				<LittleButton title="v.0.17" onPress={handleVersionButton}></LittleButton>
 			</View>
 		</SafeAreaView>
 	)
