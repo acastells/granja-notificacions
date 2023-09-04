@@ -94,3 +94,25 @@ export async function completeAlarm(notification_id) {
 		console.error(e)
 	}
 }
+
+
+export async function descompleteAlarm(old_notification_id, new_notification_id) {
+	try {
+		const jsonValue = await AsyncStorage.getItem('entries_json');
+		var entries = JSON.parse(jsonValue)
+		for (var entry of entries) {
+			for (var alarm of entry.alarms) {
+				if (alarm.notification_id === old_notification_id) {
+					alarm.notification_id = new_notification_id
+					alarm.completed = false
+					break
+				}
+			}
+		}
+
+		entries = JSON.stringify(entries);
+		await AsyncStorage.setItem('entries_json', entries);
+	} catch (e) {
+		console.error(e)
+	}
+}
