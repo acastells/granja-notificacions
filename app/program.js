@@ -92,12 +92,15 @@ export default function ProgramScreen() {
 
     for (var alarm of selectedAlarms) {
       if (alarm.selected == true) {
+        var trigger = new Date()
+        trigger.setDate(trigger.getDate() + alarm.days);
+        trigger.setHours(7, 0, 0, 0);
         var notification_id = await Notifications.scheduleNotificationAsync({
           content: {
             title: alarm.name + " a " + granjaName,
             body: alarm.description
           },
-          trigger: { seconds: alarm.days * MULTIPLIER_SECS_TO_DAYS },
+          trigger,
           repeats: true,
           autoDismiss: true,
           sticky: false

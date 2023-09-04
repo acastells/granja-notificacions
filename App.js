@@ -19,10 +19,15 @@ const Stack = createStackNavigator();
 
 function handleVersionButton() {
 	Notifications.getAllScheduledNotificationsAsync().then(scheduled_notifications => {
+		var info = scheduled_notifications.length.toString()
+		
 		console.log(scheduled_notifications.length)
 		for (var notification of scheduled_notifications) { 
 			console.log(notification)
+			info += JSON.stringify(notification)
 		}
+
+		alert(info)
 	})
 }
 
@@ -31,7 +36,7 @@ function customHeader() {
 		<SafeAreaView>
 			<View style={{ flexDirection: "row", paddingHorizontal: 20, paddingVertical: 10, fontWeight: "bold", borderBottomWidth: 1 }}>
 				<Text style={{ textAlign: "left", fontWeight: "bold", fontSize: 24 }}>GLOBAL ALARMS</Text>
-				<LittleButton title="v.0.17" onPress={handleVersionButton}></LittleButton>
+				<LittleButton title="v.0.18" onPress={handleVersionButton}></LittleButton>
 			</View>
 		</SafeAreaView>
 	)

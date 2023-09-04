@@ -29,13 +29,16 @@ export default function DetailScreen(props) {
 	}
 
 	async function handleDescompleteAlarm(alarm) {
+		var trigger = new Date()
+		trigger.setDate(trigger.getDate() + alarm.days);
+		trigger.setHours(7, 0, 0, 0);
 		var old_notification_id = alarm.notification_id
 		var new_notification_id = await Notifications.scheduleNotificationAsync({
 			content: {
 				title: alarm.name + " a " + entry.granja,
 				body: alarm.description
 			},
-			trigger: { seconds: alarm.days * MULTIPLIER_SECS_TO_DAYS },
+			trigger,
 			repeats: true,
 			autoDismiss: true,
 			sticky: false
@@ -96,7 +99,7 @@ export default function DetailScreen(props) {
 							<Text>{item.description}</Text>
 							<View style={{ flexDirection: "row" }}>
 								{item.completed === true ?
-									<Button onPress={() => handleDescompleteAlarm(item)} title="Descompletar"></Button>
+									<Button onPress={() => handleDescompleteAlarm(item)} title="Reprogramar"></Button>
 									:
 									<Button onPress={() => handleCompleteAlarm(item)} title="Completar"></Button>
 								}
